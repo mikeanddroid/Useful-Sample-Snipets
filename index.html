@@ -24,6 +24,174 @@
 
 <p>Contributers <a href="https://github.com/mikeanddroid" class="user-mention">@mikeanddroid</a></p>
 
+<h1>
+<a id="some-useful-snipets" class="anchor" href="#some-useful-snipets" aria-hidden="true"><span class="octicon octicon-link"></span></a>Some Useful Snipets</h1>
+
+<h3>
+<a id="getting-zip-code-from-the-name-of-the-city-or-a-place" class="anchor" href="#getting-zip-code-from-the-name-of-the-city-or-a-place" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting Zip Code from the name of the city or a place</h3>
+
+<pre><code>
+public static class GeocoderTask extends AsyncTask&lt;String, Void, String&gt; {
+
+        private Context context;
+
+        public GeocoderTask(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            Geocoder geocoder = new Geocoder(context);
+
+            try {
+
+                Address address = geocoder.getFromLocationName(params[0], 1).get(0);
+                address = geocoder.getFromLocation(address.getLatitude(), address.getLongitude(), 1).get(0);
+                return address.getPostalCode();
+
+            } catch (Exception e) {
+                Log.e(TAG, "Error getting zip for location. " + e);
+                return null;
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            Log.d(TAG, " Got parsed zip : " + s);
+        }
+    }
+
+</code></pre>
+
+<hr>
+
+<h3>
+<a id="verify-android-m-permission" class="anchor" href="#verify-android-m-permission" aria-hidden="true"><span class="octicon octicon-link"></span></a>Verify Android M Permission</h3>
+
+<p><strong>Utility class that wraps access to the runtime permissions API in M and provides basic helper methods.</strong></p>
+
+<pre><code>public static boolean verifyPermissions(int[] grantResults) {
+
+// At least one result must be checked.
+        if(grantResults.length &lt; 1){
+            return false;
+        }
+
+        // Verify that each required permission has been granted, otherwise return false.
+        for (int result : grantResults) {
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+</code></pre>
+
+<hr>
+
+<h3>
+<a id="check-for-gps-enableddisabled" class="anchor" href="#check-for-gps-enableddisabled" aria-hidden="true"><span class="octicon octicon-link"></span></a>Check for GPS enabled/disabled</h3>
+
+<pre><code>   public static boolean isGPSEnabled(final Context context) {
+
+        LocationManager manager = (LocationManager) context.getSystemService(context.LOCATION_SERVICE);
+
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
+</code></pre>
+
+<hr>
+
+<h3>
+<a id="convert-input-stream-to-string" class="anchor" href="#convert-input-stream-to-string" aria-hidden="true"><span class="octicon octicon-link"></span></a>Convert Input Stream to String</h3>
+
+<pre><code>    public static String inputStreamToString(InputStream inputStream, String charsetName) throws IOException {
+
+        StringBuilder builder = new StringBuilder();
+        InputStreamReader reader = new InputStreamReader(inputStream, charsetName);
+
+        char[] buffer = new char[BUFFER_SIZE];
+        int length;
+
+        while ((length = reader.read(buffer)) != -1) {
+            builder.append(buffer, 0, length);
+        }
+
+        return builder.toString();
+
+    }
+
+</code></pre>
+
+<hr>
+
+<h3>
+<a id="check-for-telephony-with-the-help-of-reflection" class="anchor" href="#check-for-telephony-with-the-help-of-reflection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Check for telephony with the help of reflection</h3>
+
+<pre><code>public static boolean hasTelephony(Activity context) {
+
+        boolean hasTelephony;
+        try {
+            TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            if (tm == null) {
+                hasTelephony = false;
+                return hasTelephony;
+            }
+
+            PackageManager pm = context.getPackageManager();
+            Method method;
+
+            Class&lt;?&gt;[] parameters = new Class&lt;?&gt;[1];
+            parameters[0] = String.class;
+            method = pm.getClass().getMethod("hasSystemFeature", parameters);
+            Object[] parm = new Object[1];
+            parm[0] = PackageManager.FEATURE_TELEPHONY;
+            Object retValue = method.invoke(pm, parm);
+            if (retValue instanceof Boolean) {
+                hasTelephony = (Boolean) retValue;
+            } else {
+                hasTelephony = false;
+            }
+        } catch (Exception e) {
+            Log.e("HasTelephony", "Exception hasTelephony = false " + e);
+            hasTelephony = false;
+        }
+
+        return hasTelephony;
+    }
+
+</code></pre>
+
+<hr>
+
+<h3>
+<a id="get-typeface-used-when-you-want-to-set-a-custom-typeface-to-your-text-fonts" class="anchor" href="#get-typeface-used-when-you-want-to-set-a-custom-typeface-to-your-text-fonts" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get Typeface-Used when you want to set a custom typeface to your Text fonts</h3>
+
+<pre><code>    public static Typeface your_Method_Name(Context context) {
+
+        Typeface  someTypeface;
+
+        AssetManager mgr = context.getAssets();
+        someTypeface = Typeface.createFromAsset(mgr, "fonts/your_font.ttf");
+
+        return someTypeface;
+
+    }
+
+</code></pre>
+
+<hr>
+
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/mikeanddroid/Useful-Sample-Snipets">Useful-sample-snipets</a> is maintained by <a href="https://github.com/mikeanddroid">mikeanddroid</a>.</span>
 
